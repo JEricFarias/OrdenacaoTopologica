@@ -163,21 +163,15 @@ public class OrdenacaoTopologica {
 			}
 			int i;
 			for(i = 0; i < filaExecucao.size(); i++){
-				System.out.println("FilaExecucao");
 				for(Tarefa dependenteDoExecultando: filaExecucao.get(i).getListaDependencias()){
-					System.out.println("DependenteDoExecultando");
 					if(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).getQtdaDependencias() > 0){
-						System.out.println("Quantidade de dependentes maior que zero");
 						tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).setQtdaDependencias(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).getQtdaDependencias() - 1);
 					}else{
-						System.out.println("Quantidade de dependentes menor ou igual a zero adiciona na filaDeExeculção");
 						filaExecucao.add(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1)); 
 					}
 					
 					if(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).getQtdaDependencias() <= 0){
-						System.out.println("Adicionado na lista ");
 						filaExecucao.add(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1));
-						System.out.println("Tamanho da filaDeExecução: " + filaExecucao.size());
 						
 					}
 					
