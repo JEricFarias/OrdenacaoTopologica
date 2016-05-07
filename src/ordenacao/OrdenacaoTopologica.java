@@ -46,7 +46,7 @@ import java.util.*;
  */
 public class OrdenacaoTopologica {
 
-	private static final String DELIMITADORES = "\\(|\\,)";
+	private static final String DELIMITADORES = "\\(|\\)";
 	private static List<Problema> problemas = new ArrayList<>();
 
 	public static void main(String[] args) throws IOException {
@@ -95,7 +95,6 @@ public class OrdenacaoTopologica {
 		// for está colocando todos os valores do arquivo dentro de um vetor.
 		for (int i = 0; i < dependencias.length; i++) {
 			dependencias[i] = token.nextToken();
-			System.out.println(dependencias[i]);
 		}
 		
 		// for está criando tarefas, tantas quanto a quantidade de tarefas especificado pelo aquivo.
@@ -108,10 +107,8 @@ public class OrdenacaoTopologica {
 		for(int i = 0; i < qtdaTarefas;i++){
 			tarefas.get(i).setQtdaDependencias(retornaQuantidadeDeDependencias(
 					dependencias, tarefas.get(i).getIdTarefa()));
-			//if(tarefas.get(i).getQtdaDependencias() > 0){
 				tarefas.get(i).setListaDependencias(retornaListaDeDependencias(dependencias,
 						tarefas.get(i).getIdTarefa(), tarefas));
-			//}
 		}
 
 		return tarefas;
@@ -121,8 +118,8 @@ public class OrdenacaoTopologica {
 	private static int retornaQuantidadeDeDependencias(String[] dependencias,
 			Integer idTarefa) {
 		int numeroDependencias = 0;
-		for(int i = 1; i < dependencias.length; i += 2){
-			if(Integer.parseInt(dependencias[i]) == idTarefa){
+		for(String aux: dependencias){
+			if(Integer.parseInt( aux.split(",")[1] ) == idTarefa){
 				numeroDependencias++;
 			}
 		}
@@ -134,10 +131,9 @@ public class OrdenacaoTopologica {
 		
 		List<Tarefa> tempTarefas = new ArrayList<>();
 	
-		for(int i = 0; i < dependencias.length; i+=2){
-			//System.out.println("i = " + i + " id tarefa = " + idTarefa + " id de acesso ao dependentes " + (Integer.parseInt(dependencias[i-1]) - 1));
-			if(Integer.parseInt(dependencias[i]) == idTarefa){
-				tempTarefas.add(tarefas.get(Integer.parseInt(dependencias[i + 1]) - 1) );
+		for(String aux: dependencias){
+			if(Integer.parseInt( aux.split(",")[0] ) == idTarefa){
+				tempTarefas.add(tarefas.get(Integer.parseInt( aux.split(",")[1]) - 1));
 			}
 		}
 		
@@ -161,17 +157,18 @@ public class OrdenacaoTopologica {
 					filaExecucao.add(tarefa);
 				}
 			}
+			
 			int i;
 			for(i = 0; i < filaExecucao.size(); i++){
 				for(Tarefa dependenteDoExecultando: filaExecucao.get(i).getListaDependencias()){
-					if(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).getQtdaDependencias() > 0){
-						tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).setQtdaDependencias(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).getQtdaDependencias() - 1);
+					if(dependenteDoExecultando.getQtdaDependencias() > 0){
+						dependenteDoExecultando.setQtdaDependencias(dependenteDoExecultando.getQtdaDependencias() - 1);
 					}else{
-						filaExecucao.add(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1)); 
+						filaExecucao.add(dependenteDoExecultando); 
 					}
 					
-					if(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1).getQtdaDependencias() <= 0){
-						filaExecucao.add(tarefasDoProblema.get(dependenteDoExecultando.getIdTarefa() - 1));
+					if(dependenteDoExecultando.getQtdaDependencias() <= 0){
+						filaExecucao.add(dependenteDoExecultando);
 						
 					}
 					
@@ -182,6 +179,7 @@ public class OrdenacaoTopologica {
 			for(Tarefa s: saida){
 				System.out.print("Tarefa: " + s.getIdTarefa() + " ");
 			}
+			System.out.println();
 			problema.setTarefasSaida(saida);
 		}
 	}
